@@ -30,6 +30,10 @@ def reteive_all_blog(db:Session):
 
 def update_a_blog_by_id(id: int,blog:UpdateBlog, db: Session, author_id: int):
     blog_in_db = db.query(Blog).filter(Blog.id==id).first()
+    if not blog_in_db:
+        return {"error":f"Blog with id {id} does not exist"}
+    if not blog_in_db.autor_id == author_id:
+        return {"error":f"Only hte author can modify the blog"}
     blog_in_db.title = blog.title
     blog_in_db.content = blog.content
     db.add(blog_in_db)
@@ -38,9 +42,12 @@ def update_a_blog_by_id(id: int,blog:UpdateBlog, db: Session, author_id: int):
 
 def delate_a_blog_by_id(id:int, db:Session, author_id: int):
     blog_in_db= db.query(Blog).filter(Blog.id==id)
+    
     if not blog_in_db.first():
-        return {"error", f"Could not find blod with the id {id}"}
+        return {"error":f"Could not find blod with the id {id}"}
+    if not blog_in_db.first().autor_id == author_id:
+        return {"error":f"Only hte author can delete the blog"}
     blog_in_db.delete()
     db.commit()
-    return {"msg",f"Delated blog with id {id}"}
+    return {"msg":f"Delated blog with id {id}"}
 

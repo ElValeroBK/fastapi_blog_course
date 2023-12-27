@@ -14,3 +14,4 @@ class Hasher:
         return pwd_context.hash(password)
     
 
+   
